@@ -1,0 +1,39 @@
+apiVersion: 1
+
+datasources:
+  - name: Tempo
+    type: tempo
+    uid: EbPG8fYoz
+    url: http://tempo:3200
+    access: proxy
+    basicAuth: false
+    jsonData:
+      httpMethod: POST
+      serviceMap:
+        datasourceUid: '9dd62383339e'
+      tracesToMetrics:
+        datasourceUid: '9dd62383339e'
+        spanStartTimeShift: '-1h'
+        spanEndTimeShift: '1h'
+        tags: [{ key: 'service.name', value: 'service' }, { key: 'job' }]
+      nodeGraph:
+        enabled: true
+      search:
+        hide: false
+      traceQuery:
+        timeShiftEnabled: true
+        spanStartTimeShift: '-1h'
+        spanEndTimeShift: '1h'
+      spanBar:
+        type: 'Tag'
+        tag: 'http.path'
+
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    # Access mode - proxy (server in the UI) or direct (browser in the UI).
+    url: http://prometheus:9090
+    uid: 9dd62383339e
+    jsonData:
+      httpMethod: POST
+      manageAlerts: true

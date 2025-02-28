@@ -1,0 +1,65 @@
+server:
+  http_listen_port: 3200
+
+distributor:
+  receivers:                           # this configuration will listen on all ports and protocols that tempo is capable of.
+#    jaeger:                            # the receives all come from the OpenTelemetry collector.  more configuration information can
+#      protocols:                       # be found there: https://github.com/open-telemetry/opentelemetry-collector/tree/main/receiver
+#        thrift_http:                   # for a production deployment you should only enable the receivers you need!
+#        thrift_binary:
+#        thrift_compact:
+    otlp:                            # the receives all come from the OpenTelemetry collector.  more configuration information can
+      protocols:                       # be found there: https://github.com/open-telemetry/opentelemetry-collector/tree/main/receiver
+        http:
+
+ingester:
+  max_block_duration: 5m               # cut the headblock when this much time passes. this is being set for demo purposes and should probably be left alone normally
+
+compactor:
+  compaction:
+    block_retention: 336h                # overall Tempo trace retention. set for demo purposes
+
+metrics_generator:
+  metrics_ingestion_time_range_slack: 60s
+  processor:
+      service_graphs:
+            # Additional dimensions to add to the metrics. Dimensions are searched for in the
+            # resource and span attributes and are added to the metrics if present.
+          dimensions: [service.name,ERP]
+      span_metrics:
+            # Additional dimensions to add to the metrics along with the intrinsic dimensions.
+            # Dimensions are searched for in the resource and span attributes and are added to
+            # the metrics if present.
+          dimensions: [service.name,ERP]
+  registry:
+    external_labels:
+      source: tempo
+      cluster: linux-microservices
+  storage:
+    path: /var/tempo/generator/wal
+    remote_write:
+    - url: http://prometheus:9090/api/v1/write
+      send_exemplars: true
+
+storage:
+  trace:
+    backend: s3                        # backend configuration to use
+    wal:
+      path: /var/tempo/wal             # where to store the the wal locally
+    s3:
+      bucket: tempo                    # how to store data in s3
+      endpoint: <NAMESPACE>.compat.objectstorage.sa-saopaulo-1.oraclecloud.com
+      access_key: <access_key>
+      secret_key: <secret_key>
+      region: sa-saopaulo-1
+      insecure: false
+
+overrides:
+  defaults:
+    metrics_generator:
+      processors: 
+          - service-graphs
+          - span-metrics
+
+#overrides:
+#  metrics_generator_processors: [service-graphs, span-metrics]

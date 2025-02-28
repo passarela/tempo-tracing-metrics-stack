@@ -26,7 +26,7 @@ Isso iniciará os serviços em segundo plano.
 | Tempo     | `grafana/tempo:latest`           | 14268        | Ingestão Jaeger |
 |           |                                   | 3200         | Interface Tempo |
 |           |                                   | 6831 (UDP)   | Protocolo Jaeger UDP |
-|           |                                   | 4318         | OPENTELEMETRYHTTP |
+|           |                                   | 4318         | OPENTELEMETRY HTTP |
 | Prometheus | `prom/prometheus:latest`         | 9090         | Interface do Prometheus |
 | Grafana   | `grafana/grafana-enterprise:latest` | 8080         | Interface do Grafana |
 

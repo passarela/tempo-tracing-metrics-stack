@@ -1,7 +1,7 @@
 services:
 
   tempo:
-    image: grafana/tempo:latest
+    image: grafana/tempo:2.7.1
     command: [ "-config.file=/etc/tempo.yaml" ]
     volumes:
       - ./tempo-config/tempo-local.yml:/etc/tempo.yaml
